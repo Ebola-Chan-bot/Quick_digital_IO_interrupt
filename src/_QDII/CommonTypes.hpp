@@ -12,6 +12,8 @@ namespace Quick_digital_IO_interrupt
 	{
 		static std::move_only_function<void() const> value;
 	};
+	template <uint8_t Pin>
+	std::move_only_function<void() const> _PinIsr<Pin>::value;
 #endif
 	template <uint8_t Pin>
 	void _CommonIsr()

@@ -4,6 +4,7 @@
 //可以改为任何你连接了可用于报告引脚状态的设备的引脚号
 constexpr uint8_t BuiltinPin = 2;
 constexpr uint8_t EfficientPin = 3;
+constexpr uint8_t InterruptPin = 18;
 using namespace Quick_digital_IO_interrupt;
 void setup() {
   Serial.begin(9600);
@@ -24,6 +25,11 @@ void setup() {
   delay(1000);
   digitalWrite(BuiltinPin, LOW);
   DigitalWrite<EfficientPin, LOW>();
+
+  //任何时候InterruptPin电平上升，向串口输出
+  AttachInterrupt<InterruptPin, RISING>([]() {
+    Serial.println("中断！");
+  });
 }
 void loop() {
   //在loop阶段，EfficientPin持续闪烁
