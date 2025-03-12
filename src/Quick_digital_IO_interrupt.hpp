@@ -96,4 +96,12 @@ namespace Quick_digital_IO_interrupt {
 		_CSL_Struct14Value(_PinIsr, Pin) = std::move(ISR);
 		attachInterrupt(digitalPinToInterrupt(Pin), _CommonIsr<Pin>, Mode);
 	}
+	//此对象构造时将保存当前中断状态然后禁用中断，析构时恢复之前的中断状态。将此对象作为临时变量，可以在之后的代码直到代码块结束前禁用中断。
+	struct InterruptGuard
+	{
+		InterruptGuard() { noInterrupts(); }
+		~InterruptGuard() { if (GIE)interrupts(); }
+	protected:
+		bool const GIE = GlobalInterruptEnabled();
+	};
 }
