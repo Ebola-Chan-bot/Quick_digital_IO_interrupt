@@ -32,9 +32,12 @@ namespace Quick_digital_IO_interrupt
 	template <uint8_t... Pin>
 	struct _PinIsrMap<std::integer_sequence<uint8_t, Pin...>>
 	{
-		static constexpr _PinCommonIsr value[NUM_DIGITAL_PINS] = {{_CSL_Struct14Value(_PinIsr, Pin), _CommonIsr<Pin>}...};
+		//SAM编译器bug，constexpr只能标量使用，不能ODR使用，不能取地址，不能当作数组使用，因为无论如何一定会被优化掉，导致找不到引用错误。因此需要ODR使用的场合只能用const。
+		static _PinCommonIsr const value[NUM_DIGITAL_PINS];
 	};
-	constexpr const _PinCommonIsr &_GetPinCommonIsr(uint8_t Pin)
+	template<uint8_t...Pin>
+	_PinCommonIsr const _PinIsrMap<std::integer_sequence<uint8_t, Pin...>>::value[NUM_DIGITAL_PINS] = {{_CSL_Struct14Value(_PinIsr, Pin), _CommonIsr<Pin>}...};
+	inline _PinCommonIsr const &_GetPinCommonIsr(uint8_t Pin)
 	{
 		return _PinIsrMap<std::make_integer_sequence<uint8_t, NUM_DIGITAL_PINS>>::value[Pin];
 	}

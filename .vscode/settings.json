@@ -62,6 +62,7 @@
 		"utility": "cpp",
 		"vector": "cpp",
 		"fstream": "cpp",
-		"cinttypes": "cpp"
+		"cinttypes": "cpp",
+		"string_view": "cpp"
 	}
 }
