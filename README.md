@@ -96,7 +96,9 @@ namespace Quick_digital_IO_interrupt
 	// 检查全局设置中断是否启用。如禁用，所有引脚的中断均不工作。使用内置interrupts()和noInterrupts()来启用和禁用全局中断。
 	inline bool GlobalInterruptEnabled();
 
-	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
+	/* 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。
+	可调用对象默认需移交所有权自动管理生命周期。如果希望保留所有权手动管理生命周期，使用std::reference_wrapper包装对象。
+	*/
 	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void() const> &&ISR, int Mode);
 	template <uint8_t Pin>
 	inline void AttachInterrupt(std::move_only_function<void() const> &&ISR, int Mode);
