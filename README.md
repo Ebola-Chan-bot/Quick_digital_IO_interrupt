@@ -99,13 +99,13 @@ namespace Quick_digital_IO_interrupt
 	/* 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。
 	可调用对象默认需移交所有权自动管理生命周期。如果希望保留所有权手动管理生命周期，使用std::reference_wrapper包装对象。
 	*/
-	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void() const> &&ISR, int Mode);
+	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void()> &&ISR, int Mode);
 	template <uint8_t Pin>
-	inline void AttachInterrupt(std::move_only_function<void() const> &&ISR, int Mode);
+	inline void AttachInterrupt(std::move_only_function<void()> &&ISR, int Mode);
 	template <int Mode>
-	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void() const> &&ISR);
+	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void()> &&ISR);
 	template <uint8_t Pin, int Mode>
-	inline void AttachInterrupt(std::move_only_function<void() const> &&ISR);
+	inline void AttachInterrupt(std::move_only_function<void()> &&ISR);
 
 	// 检查指定引脚是否已附加中断，即处于监听或挂起状态。
 	template <uint8_t Pin>
@@ -143,3 +143,12 @@ namespace Quick_digital_IO_interrupt
 	struct InterruptGuard;
 }
 ```
+# `std::move_only_function<void()> &&` 使用说明
+`std::move_only_function<void()> &&` 是任意无参无返回可调用对象的类型擦除包装器，在AttachInterrupt中用于接收用户自定义的中断处理函数。支持隐式转换（即直接输入作为参数）以下类型：
+- `void(*)()`
+- 无参无返回的λ表达式
+- 任何定义了`void operator()`的可拷贝类型，且期望发生拷贝（例如`std::function<void()>`）
+
+如果输入类型定义了`void operator()`，但不可拷贝或不期望发生拷贝（例如`std::move_only_function<void()>`），则需要显式转换，推荐以下方式：
+- 使用`std::reference_wrapper`包装对象，此方法不交所有权，生命周期由用户管理。
+- 使用`std::move`，此方法转移所有权，生命周期由本库管理。此方法不支持`const`对象。

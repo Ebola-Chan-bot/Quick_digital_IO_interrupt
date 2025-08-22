@@ -71,7 +71,7 @@ namespace Quick_digital_IO_interrupt {
 	}
 
 	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
-	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void() const>&& ISR, int Mode) {
+	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void()>&& ISR, int Mode) {
 		const _PinCommonIsr& PCI = _GetPinCommonIsr(Pin);
 		PCI.PinIsr = std::move(ISR);
 		//无法优化attachInterrupt，因为牵扯到static变量，外部无法访问
@@ -79,20 +79,20 @@ namespace Quick_digital_IO_interrupt {
 	}
 	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
 	template <uint8_t Pin>
-	inline void AttachInterrupt(std::move_only_function<void() const>&& ISR, int Mode) {
+	inline void AttachInterrupt(std::move_only_function<void()>&& ISR, int Mode) {
 		_CSL_Struct14Value(_PinIsr, Pin) = std::move(ISR);
 		attachInterrupt(digitalPinToInterrupt(Pin), _CommonIsr<Pin>, Mode);
 	}
 	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
 	template <int Mode>
-	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void() const>&& ISR) {
+	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void()>&& ISR) {
 		const _PinCommonIsr& PCI = _GetPinCommonIsr(Pin);
 		PCI.PinIsr = std::move(ISR);
 		attachInterrupt(digitalPinToInterrupt(Pin), PCI.CommonIsr, Mode);
 	}
 	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
 	template <uint8_t Pin, int Mode>
-	inline void AttachInterrupt(std::move_only_function<void() const>&& ISR) {
+	inline void AttachInterrupt(std::move_only_function<void()>&& ISR) {
 		_CSL_Struct14Value(_PinIsr, Pin) = std::move(ISR);
 		attachInterrupt(digitalPinToInterrupt(Pin), _CommonIsr<Pin>, Mode);
 	}
