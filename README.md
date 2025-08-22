@@ -96,14 +96,15 @@ namespace Quick_digital_IO_interrupt
 	// 检查全局设置中断是否启用。如禁用，所有引脚的中断均不工作。使用内置interrupts()和noInterrupts()来启用和禁用全局中断。
 	inline bool GlobalInterruptEnabled();
 
-	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
-	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void() const> &&ISR, int Mode);
-	template <uint8_t Pin>
-	inline void AttachInterrupt(std::move_only_function<void() const> &&ISR, int Mode);
-	template <int Mode>
-	inline void AttachInterrupt(uint8_t Pin, std::move_only_function<void() const> &&ISR);
-	template <uint8_t Pin, int Mode>
-	inline void AttachInterrupt(std::move_only_function<void() const> &&ISR);
+	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对于复杂的可调用对象ISR，还可选使用std::move移交所有权。
+	template <typename T>
+	inline void AttachInterrupt(uint8_t Pin, T ISR, int Mode);
+	template <uint8_t Pin, typename T>
+	inline void AttachInterrupt(T ISR, int Mode);
+	template <int Mode, typename T>
+	inline void AttachInterrupt(uint8_t Pin, T ISR);
+	template <uint8_t Pin, int Mode, typename T>
+	inline void AttachInterrupt(T ISR);
 
 	// 检查指定引脚是否已附加中断，即处于监听或挂起状态。
 	template <uint8_t Pin>
