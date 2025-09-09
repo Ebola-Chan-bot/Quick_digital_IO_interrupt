@@ -25,6 +25,7 @@ void setup() {
   delay(1000);
   digitalWrite(BuiltinPin, LOW);
   DigitalWrite<EfficientPin, LOW>();
+  PinMode<InterruptPin,INPUT>();
   //任何时候InterruptPin电平上升，向串口输出
   AttachInterrupt<RISING>(InterruptPin, []() {
     Serial.println("中断！");
