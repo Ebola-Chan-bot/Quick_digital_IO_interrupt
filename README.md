@@ -142,12 +142,3 @@ namespace Quick_digital_IO_interrupt
 	struct InterruptGuard;
 }
 ```
-# `std::move_only_function<void()> &&` 使用说明
-`std::move_only_function<void()> &&` 是任意无参无返回可调用对象的类型擦除包装器，在AttachInterrupt中用于接收用户自定义的中断处理函数。支持隐式转换（即直接输入作为参数）以下类型：
-- `void(*)()`
-- 无参无返回的λ表达式
-- 任何定义了`void operator()`的可拷贝类型，且期望发生拷贝（例如`std::function<void()>`）
-
-如果输入类型定义了`void operator()`，但不可拷贝或不期望发生拷贝（例如`std::move_only_function<void()>`），则需要显式转换，推荐以下方式：
-- 使用`std::reference_wrapper`包装对象，此方法不交所有权，生命周期由用户管理。
-- 使用`std::move`，此方法转移所有权，生命周期由本库管理。此方法不支持`const`对象。
