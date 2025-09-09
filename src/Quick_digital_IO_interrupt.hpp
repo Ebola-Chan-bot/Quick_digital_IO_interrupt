@@ -114,8 +114,15 @@ namespace Quick_digital_IO_interrupt
 			if (GIE)
 				interrupts();
 		}
+		InterruptGuard(InterruptGuard const &) = delete;
+		InterruptGuard &operator=(InterruptGuard const &) = delete;
+		InterruptGuard &operator=(InterruptGuard &&Old) = delete;
+		InterruptGuard(InterruptGuard &&Old) : GIE(Old.GIE)
+		{
+			Old.GIE = false;
+		}
 
 	protected:
-		bool const GIE = GlobalInterruptEnabled();
+		bool GIE = GlobalInterruptEnabled();
 	};
 }
