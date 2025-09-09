@@ -2,8 +2,10 @@
 //本示例比较了使用内置函数和本库函数的相同功能。从肉眼上看不出区别，证明本库能够实现和内置函数相同的基本功能。但是在高频读写情况下，使用模板参数执行编译期计算，本库将更胜一筹。
 
 //可以改为任何你连接了可用于报告引脚状态的设备的引脚号
-constexpr uint8_t BuiltinPin = 2;
-constexpr uint8_t EfficientPin = 3;
+constexpr uint8_t BuiltinPin = 6;
+constexpr uint8_t EfficientPin = 8;
+
+//此引脚用于输入，应连接输入设备
 constexpr uint8_t InterruptPin = 18;
 using namespace Quick_digital_IO_interrupt;
 void setup() {

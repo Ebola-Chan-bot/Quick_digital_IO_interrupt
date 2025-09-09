@@ -76,33 +76,33 @@ namespace Quick_digital_IO_interrupt
 
 	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
 	template <typename T>
-	inline void AttachInterrupt(uint8_t Pin, T ISR, int Mode)
+	inline void AttachInterrupt(uint8_t Pin, T &&ISR, int Mode)
 	{
 		const _PinCommonIsr &PCI = _GetPinCommonIsr(Pin);
-		PCI.PinIsr = _Once(ISR);
+		PCI.PinIsr = _Once(std::forward<T>(ISR));
 		// 无法优化attachInterrupt，因为牵扯到static变量，外部无法访问
 		attachInterrupt(digitalPinToInterrupt(Pin), PCI.CommonIsr, Mode);
 	}
 	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
 	template <uint8_t Pin, typename T>
-	inline void AttachInterrupt(T ISR, int Mode)
+	inline void AttachInterrupt(T &&ISR, int Mode)
 	{
-		_CSL_Struct14Value(_PinIsr, Pin) = _Once(ISR);
+		_CSL_Struct14Value(_PinIsr, Pin) = _Once(std::forward<T>(ISR));
 		attachInterrupt(digitalPinToInterrupt(Pin), _CommonIsr<Pin>, Mode);
 	}
 	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
 	template <int Mode, typename T>
-	inline void AttachInterrupt(uint8_t Pin, T ISR)
+	inline void AttachInterrupt(uint8_t Pin, T &&ISR)
 	{
 		const _PinCommonIsr &PCI = _GetPinCommonIsr(Pin);
-		PCI.PinIsr = _Once(ISR);
+		PCI.PinIsr = _Once(std::forward<T>(ISR));
 		attachInterrupt(digitalPinToInterrupt(Pin), PCI.CommonIsr, Mode);
 	}
 	// 将任意可调用对象作为引脚的中断处理方法，并设置中断条件。此方法仅用于支持复杂的可调用对象，实际性能低于内置attachInterrupt，无论是在附加时还是在中断处理时都会有额外开销。如果你只需要附加一个简单的函数指针，应使用内置方法。对象会在下次调用AttachInterrupt（非内置）时被析构，在那之前其所拥有的资源将不会被释放。
 	template <uint8_t Pin, int Mode, typename T>
-	inline void AttachInterrupt(T ISR)
+	inline void AttachInterrupt(T &&ISR)
 	{
-		_CSL_Struct14Value(_PinIsr, Pin) = _Once(ISR);
+		_CSL_Struct14Value(_PinIsr, Pin) = _Once(std::forward<T>(ISR));
 		attachInterrupt(digitalPinToInterrupt(Pin), _CommonIsr<Pin>, Mode);
 	}
 	// 此对象构造时将保存当前中断状态然后禁用中断，析构时恢复之前的中断状态。将此对象作为临时变量，可以在之后的代码直到代码块结束前禁用中断。
